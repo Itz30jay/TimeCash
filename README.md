@@ -179,6 +179,3 @@ The output AAB file will be located at:
 
 ## 📄 License
 This project is open-source under the MIT License.
-=======
-# TimeCash
->>>>>>> 40697b4be23f41e1e0bb3d099c310a02c3884058
