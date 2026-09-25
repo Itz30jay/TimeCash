@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TimeCash ⏳💰
 
 **TimeCash** is a 100% offline-first Flutter mobile application built specifically for students. It combines a study timetable scheduler with strong reminders and an intuitive daily expense tracker.
@@ -179,3 +180,6 @@ The output AAB file will be located at:
 
 ## 📄 License
 This project is open-source under the MIT License.
+=======
+# TimeCash
+>>>>>>> 40697b4be23f41e1e0bb3d099c310a02c3884058
