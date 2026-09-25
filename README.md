@@ -1,5 +1,9 @@
 # TimeCash ⏳💰
 
+[![CI/CD Pipeline](https://github.com/Itz30jay/TimeCash/actions/workflows/ci.yml/badge.svg)](https://github.com/Itz30jay/TimeCash/actions/workflows/ci.yml)
+[![Flutter Version](https://img.shields.io/badge/Flutter-3.5%2B-02569B?logo=flutter)](https://flutter.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 **TimeCash** is a 100% offline-first Flutter mobile application built specifically for students. It combines a study timetable scheduler with strong reminders and an intuitive daily expense tracker.
 
 > **Zero Cloud. Zero Ads. Complete Privacy.**  
