@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # TimeCash ⏳💰
 
 **TimeCash** is a 100% offline-first Flutter mobile application built specifically for students. It combines a study timetable scheduler with strong reminders and an intuitive daily expense tracker.
