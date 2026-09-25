@@ -167,161 +167,162 @@ class _StudyFocusScreenState extends State<StudyFocusScreen> {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 12),
-
-            // Task selector dropdown
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: DropdownButtonFormField<Task?>(
-                initialValue: _selectedTask,
-                isExpanded: true,
-                decoration: const InputDecoration(
-                  labelText: 'Focusing on task (optional)',
-                  prefixIcon: Icon(Icons.task_alt_rounded),
-                ),
-                items: [
-                  const DropdownMenuItem<Task?>(
-                    value: null,
-                    child: Text('General Focus Session'),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            children: [
+              // Task selector dropdown
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: DropdownButtonFormField<Task?>(
+                  initialValue: _selectedTask,
+                  isExpanded: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Focusing on task (optional)',
+                    prefixIcon: Icon(Icons.task_alt_rounded),
                   ),
-                  ...availableTasks.map(
-                    (t) => DropdownMenuItem<Task?>(
-                      value: t,
-                      child: Text(
-                        '${t.title} (${t.startTime})',
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                  items: [
+                    const DropdownMenuItem<Task?>(
+                      value: null,
+                      child: Text('General Focus Session'),
                     ),
-                  ),
-                ],
-                onChanged: _isRunning
-                    ? null
-                    : (task) => setState(() => _selectedTask = task),
-              ),
-            ),
-
-            const Spacer(),
-
-            // Circular progress timer
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  width: 240,
-                  height: 240,
-                  child: CircularProgressIndicator(
-                    value: progress,
-                    strokeWidth: 10,
-                    backgroundColor: isDark
-                        ? AppTheme.darkSurfaceHigh
-                        : AppTheme.lightSurfaceHigh,
-                    valueColor: const AlwaysStoppedAnimation(AppTheme.primaryIndigo),
-                  ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _formatTime(),
-                      style: const TextStyle(
-                        fontSize: 48,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      _isRunning ? 'FOCUSING' : 'READY',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.5,
-                        color: _isRunning
-                            ? AppTheme.primaryIndigo
-                            : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                    ...availableTasks.map(
+                      (t) => DropdownMenuItem<Task?>(
+                        value: t,
+                        child: Text(
+                          '${t.title} (${t.startTime})',
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ],
+                  onChanged: _isRunning
+                      ? null
+                      : (task) => setState(() => _selectedTask = task),
                 ),
-              ],
-            ),
-
-            const SizedBox(height: 32),
-
-            // Motivational quote card
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                '“${_motivationalQuotes[_quoteIndex]}”',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontStyle: FontStyle.italic,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  height: 1.4,
-                ),
-                textAlign: TextAlign.center,
               ),
-            ),
 
-            const Spacer(),
+              const SizedBox(height: 14),
 
-            // Preset duration chips
-            Wrap(
-              spacing: 8,
-              children: _presetMinutes.map((m) {
-                final isSelected = _selectedMinutes == m;
-                final isBreak = m <= 15;
-                return ChoiceChip(
-                  label: Text(isBreak ? '${m}m Break' : '${m}m Study'),
-                  selected: isSelected,
-                  onSelected: _isRunning ? null : (_) => _selectPreset(m),
-                  selectedColor:
-                      AppTheme.primaryIndigo.withValues(alpha: 0.2),
-                  labelStyle: TextStyle(
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    color: isSelected ? AppTheme.primaryIndigo : null,
-                  ),
-                );
-              }).toList(),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Controls
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Row(
+              // Circular progress timer
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  Expanded(
-                    child: PrimaryButton(
-                      label: _isRunning ? 'Pause' : 'Start Focus',
-                      icon: _isRunning
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
-                      color: _isRunning ? AppTheme.warningOrange : AppTheme.primaryIndigo,
-                      onPressed: _toggleTimer,
+                  SizedBox(
+                    width: 210,
+                    height: 210,
+                    child: CircularProgressIndicator(
+                      value: progress,
+                      strokeWidth: 9,
+                      backgroundColor: isDark
+                          ? AppTheme.darkSurfaceHigh
+                          : AppTheme.lightSurfaceHigh,
+                      valueColor: const AlwaysStoppedAnimation(AppTheme.primaryIndigo),
                     ),
                   ),
-                  if (_isRunning || _remainingSeconds < totalSeconds) ...[
-                    const SizedBox(width: 12),
-                    IconButton.filledTonal(
-                      icon: const Icon(Icons.check_rounded),
-                      tooltip: 'Mark Done Early',
-                      onPressed: _onSessionComplete,
-                      style: IconButton.styleFrom(
-                        backgroundColor:
-                            AppTheme.successGreen.withValues(alpha: 0.15),
-                        foregroundColor: AppTheme.successGreen,
-                        padding: const EdgeInsets.all(14),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _formatTime(),
+                        style: const TextStyle(
+                          fontSize: 44,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 2,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        _isRunning ? 'FOCUSING' : 'READY',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.5,
+                          color: _isRunning
+                              ? AppTheme.primaryIndigo
+                              : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-          ],
+
+              const SizedBox(height: 14),
+
+              // Motivational quote card
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Text(
+                  '“${_motivationalQuotes[_quoteIndex]}”',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    height: 1.3,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              // Preset duration chips
+              Wrap(
+                spacing: 8,
+                children: _presetMinutes.map((m) {
+                  final isSelected = _selectedMinutes == m;
+                  final isBreak = m <= 15;
+                  return ChoiceChip(
+                    label: Text(isBreak ? '${m}m Break' : '${m}m Study'),
+                    selected: isSelected,
+                    onSelected: _isRunning ? null : (_) => _selectPreset(m),
+                    selectedColor:
+                        AppTheme.primaryIndigo.withValues(alpha: 0.2),
+                    labelStyle: TextStyle(
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      color: isSelected ? AppTheme.primaryIndigo : null,
+                    ),
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: 14),
+
+              // Controls
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: PrimaryButton(
+                        label: _isRunning ? 'Pause' : 'Start Focus',
+                        icon: _isRunning
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        color: _isRunning ? AppTheme.warningOrange : AppTheme.primaryIndigo,
+                        onPressed: _toggleTimer,
+                      ),
+                    ),
+                    if (_isRunning || _remainingSeconds < totalSeconds) ...[
+                      const SizedBox(width: 12),
+                      IconButton.filledTonal(
+                        icon: const Icon(Icons.check_rounded),
+                        tooltip: 'Mark Done Early',
+                        onPressed: _onSessionComplete,
+                        style: IconButton.styleFrom(
+                          backgroundColor:
+                              AppTheme.successGreen.withValues(alpha: 0.15),
+                          foregroundColor: AppTheme.successGreen,
+                          padding: const EdgeInsets.all(14),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
