@@ -43,5 +43,40 @@ void main() {
       expect(find.text('FOCUSING'), findsOneWidget);
       expect(find.text('Pause'), findsOneWidget);
     });
+
+    testWidgets('allows setting custom timer duration', (tester) async {
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => TaskProvider()),
+          ],
+          child: const MaterialApp(
+            home: StudyFocusScreen(),
+          ),
+        ),
+      );
+
+      // Verify Custom chip exists
+      expect(find.text('Custom'), findsOneWidget);
+
+      // Tap Custom chip to open dialog
+      await tester.tap(find.text('Custom'));
+      await tester.pumpAndSettle();
+
+      // Verify dialog is shown
+      expect(find.text('Custom Focus Timer'), findsOneWidget);
+
+      // Enter 35 minutes
+      await tester.enterText(find.byType(TextFormField), '35');
+      await tester.pumpAndSettle();
+
+      // Tap 'Set Timer'
+      await tester.tap(find.text('Set Timer'));
+      await tester.pumpAndSettle();
+
+      // Verify timer is set to 35:00
+      expect(find.text('35:00'), findsOneWidget);
+      expect(find.text('35m Custom'), findsOneWidget);
+    });
   });
 }

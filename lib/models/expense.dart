@@ -8,6 +8,7 @@ class Expense {
   final String? note;
   final String? paymentMethod;
   final String date; // yyyy-MM-dd
+  final String? time; // HH:mm
   final String createdAt;
   final String updatedAt;
 
@@ -18,6 +19,7 @@ class Expense {
     this.note,
     this.paymentMethod,
     required this.date,
+    this.time,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -30,6 +32,7 @@ class Expense {
       'note': note,
       'payment_method': paymentMethod,
       'date': date,
+      'time': time,
       'created_at': createdAt,
       'updated_at': updatedAt,
     };
@@ -43,6 +46,7 @@ class Expense {
       note: map['note'] as String?,
       paymentMethod: map['payment_method'] as String?,
       date: map['date'] as String,
+      time: map['time'] as String?,
       createdAt: map['created_at'] as String,
       updatedAt: map['updated_at'] as String,
     );
@@ -55,6 +59,7 @@ class Expense {
     String? note,
     String? paymentMethod,
     String? date,
+    String? time,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -65,6 +70,7 @@ class Expense {
       note: note ?? this.note,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       date: date ?? this.date,
+      time: time ?? this.time,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -72,5 +78,5 @@ class Expense {
 
   @override
   String toString() =>
-      'Expense(id: $id, amount: $amount, category: $category, date: $date)';
+      'Expense(id: $id, amount: $amount, category: $category, date: $date, time: $time)';
 }

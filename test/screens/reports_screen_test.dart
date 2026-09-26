@@ -38,7 +38,7 @@ void main() {
 
       // Verify AppBar and tabs
       expect(find.text('Reports'), findsOneWidget);
-      expect(find.text('Study'), findsOneWidget);
+      expect(find.text('Schedule'), findsOneWidget);
       expect(find.text('Money'), findsOneWidget);
 
       // Verify Study tab stat cards

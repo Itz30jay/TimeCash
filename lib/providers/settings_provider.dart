@@ -4,6 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:timecash/services/settings_service.dart';
 import 'package:timecash/services/notification_service.dart';
+import 'package:timecash/utils/constants.dart';
 
 class SettingsProvider extends ChangeNotifier {
   final SettingsService _settings = SettingsService();
@@ -18,6 +19,8 @@ class SettingsProvider extends ChangeNotifier {
   bool _showNextTaskNotification = false;
   bool _hasNotificationPermission = false;
   bool _hasExactAlarmPermission = false;
+  String _userName = '';
+  String _userRole = AppConstants.roleStudent;
 
   ThemeMode get themeMode => _themeMode;
   String get currencySymbol => _currencySymbol;
@@ -28,6 +31,8 @@ class SettingsProvider extends ChangeNotifier {
   bool get showNextTaskNotification => _showNextTaskNotification;
   bool get hasNotificationPermission => _hasNotificationPermission;
   bool get hasExactAlarmPermission => _hasExactAlarmPermission;
+  String get userName => _userName;
+  String get userRole => _userRole;
 
   Future<void> loadSettings() async {
     _themeMode = _settings.themeMode;
@@ -37,6 +42,8 @@ class SettingsProvider extends ChangeNotifier {
     _preAlertEnabled = _settings.preAlertEnabled;
     _preAlertMinutes = _settings.preAlertMinutes;
     _showNextTaskNotification = _settings.showNextTaskNotification;
+    _userName = _settings.userName;
+    _userRole = _settings.userRole;
 
     await refreshPermissions();
     notifyListeners();
@@ -83,6 +90,18 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> setShowNextTaskNotification(bool show) async {
     _showNextTaskNotification = show;
     await _settings.setShowNextTaskNotification(show);
+    notifyListeners();
+  }
+
+  Future<void> setUserName(String name) async {
+    _userName = name;
+    await _settings.setUserName(name);
+    notifyListeners();
+  }
+
+  Future<void> setUserRole(String role) async {
+    _userRole = role;
+    await _settings.setUserRole(role);
     notifyListeners();
   }
 

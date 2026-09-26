@@ -12,10 +12,10 @@ void main() {
       );
 
       // Verify header and title
-      expect(find.text('Support the Developer'), findsOneWidget);
-      expect(find.text('Support TimeCash'), findsOneWidget);
+      expect(find.text('About the Developer'), findsOneWidget);
+      expect(find.text('Support Flowra'), findsOneWidget);
       expect(
-        find.textContaining('TimeCash is free and offline.'),
+        find.textContaining('Flowra is free'),
         findsOneWidget,
       );
 
@@ -24,6 +24,9 @@ void main() {
       expect(find.text('₹20'), findsOneWidget);
       expect(find.text('₹50'), findsOneWidget);
       expect(find.text('₹100'), findsOneWidget);
+
+      // Verify Copy UPI ID button exists
+      expect(find.textContaining('Copy UPI ID'), findsOneWidget);
 
       // Initially button says 'Select an Amount'
       expect(find.text('Select an Amount'), findsOneWidget);
@@ -55,23 +58,26 @@ void main() {
         ),
       );
 
+      // Developer social links
+      expect(find.text('GitHub'), findsOneWidget);
+      expect(find.text('Instagram'), findsOneWidget);
+
       // Scroll to the footer
       await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -800));
       await tester.pumpAndSettle();
 
-      // Footer social links
-      expect(find.text('GitHub'), findsOneWidget);
-      expect(find.text('Instagram'), findsOneWidget);
-
       // Copyright text (year is dynamic)
       expect(find.textContaining('©'), findsOneWidget);
-      expect(find.textContaining('Jay'), findsOneWidget);
+      expect(find.textContaining('All rights reserved.'), findsOneWidget);
 
       // Made with love text
       expect(find.textContaining('Made with'), findsOneWidget);
 
-      // Open-source text
-      expect(find.textContaining('open-source'), findsOneWidget);
+      // Open-source text should NOT exist
+      expect(find.textContaining('open-source'), findsNothing);
+
+      // Support encouragement text
+      expect(find.text('If Flowra helps you, consider supporting its development ❤️'), findsOneWidget);
     });
   });
 }

@@ -1,4 +1,4 @@
-/// TimeCash — Offline Study Planner & Expense Tracker
+/// Flowra — Offline Planner & Expense Tracker
 /// Entry point with Provider setup, routing, and bottom navigation.
 library;
 
@@ -44,19 +44,19 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ExpenseProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
-      child: const TimeCashApp(),
+      child: const FlowraApp(),
     ),
   );
 }
 
-class TimeCashApp extends StatefulWidget {
-  const TimeCashApp({super.key});
+class FlowraApp extends StatefulWidget {
+  const FlowraApp({super.key});
 
   @override
-  State<TimeCashApp> createState() => _TimeCashAppState();
+  State<FlowraApp> createState() => _FlowraAppState();
 }
 
-class _TimeCashAppState extends State<TimeCashApp> {
+class _FlowraAppState extends State<FlowraApp> {
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -143,7 +143,7 @@ class _TimeCashAppState extends State<TimeCashApp> {
 
     return MaterialApp(
       navigatorKey: _navigatorKey,
-      title: 'TimeCash',
+      title: 'Flowra',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),

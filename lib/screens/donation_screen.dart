@@ -1,7 +1,8 @@
-/// Donation screen with preset amounts and external payment link.
+/// About the Developer & optional donation screen.
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:timecash/utils/constants.dart';
 import 'package:timecash/utils/theme.dart';
@@ -30,6 +31,31 @@ class _DonationScreenState extends State<DonationScreen> {
     return int.tryParse(_customController.text.trim()) ?? 0;
   }
 
+  Future<void> _launchUrlHelper(String url) async {
+    final uri = Uri.parse(url);
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not open link: $e')),
+        );
+      }
+    }
+  }
+
+  void _copyUpiId() {
+    Clipboard.setData(const ClipboardData(text: AppConstants.donationUpiId));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('UPI ID copied to clipboard: ${AppConstants.donationUpiId}'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
   Future<void> _donate() async {
     final amount = _amount;
     if (amount <= 0) {
@@ -42,44 +68,61 @@ class _DonationScreenState extends State<DonationScreen> {
     if (!AppConstants.isDonationEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Donation link is not available right now.')),
+            content: Text('Donation is currently not available.')),
       );
       return;
     }
 
-    // Build UPI link
+    // Build UPI link with properly encoded parameters
     final upiUrl = Uri.parse(
-      'upi://pay?pa=${AppConstants.donationUpiId}'
+      'upi://pay?pa=${Uri.encodeComponent(AppConstants.donationUpiId)}'
       '&pn=${Uri.encodeComponent(AppConstants.donationUpiName)}'
       '&am=$amount'
       '&cu=INR'
-      '&tn=${Uri.encodeComponent("TimeCash Donation")}',
+      '&tn=${Uri.encodeComponent("Flowra Donation")}',
     );
 
     try {
       if (await canLaunchUrl(upiUrl)) {
         await launchUrl(upiUrl, mode: LaunchMode.externalApplication);
         setState(() => _showThankYou = true);
-      } else if (AppConstants.donationPaymentLink.isNotEmpty) {
+        return;
+      }
+
+      // Fallback try launchUrl directly in case query permissions differ
+      try {
+        final launched = await launchUrl(upiUrl, mode: LaunchMode.externalApplication);
+        if (launched) {
+          setState(() => _showThankYou = true);
+          return;
+        }
+      } catch (_) {}
+
+      if (AppConstants.donationPaymentLink.isNotEmpty) {
         // Fallback to web payment link
         await launchUrl(
           Uri.parse(AppConstants.donationPaymentLink),
           mode: LaunchMode.externalApplication,
         );
         setState(() => _showThankYou = true);
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No UPI app found. Please install one.'),
-            ),
-          );
-        }
+        return;
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No UPI app found. You can copy the UPI ID below to pay directly.'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not open payment app: $e')),
+          const SnackBar(
+            content: Text('No UPI app found. You can copy the UPI ID below to pay directly.'),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     }
@@ -90,41 +133,122 @@ class _DonationScreenState extends State<DonationScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Support the Developer')),
+      appBar: AppBar(title: const Text('About the Developer')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 16),
-            // Heart icon
+            // ─── 1. Developer Intro Block ─────────────────────────
             Container(
-              width: 80,
-              height: 80,
+              width: 88,
+              height: 88,
               decoration: BoxDecoration(
-                color: Colors.pink.withValues(alpha: 0.1),
+                color: AppTheme.primaryIndigo.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppTheme.primaryIndigo.withValues(alpha: 0.25),
+                  width: 2,
+                ),
               ),
-              child: const Icon(Icons.favorite_rounded,
-                  color: Colors.pink, size: 40),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Support TimeCash',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
-              textAlign: TextAlign.center,
+              child: const Center(
+                child: Icon(
+                  Icons.person_rounded,
+                  size: 52,
+                  color: AppTheme.primaryIndigo,
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             Text(
-              'TimeCash is free and offline. If it helps you manage your time or money, you can support the developer with any amount you like. Donation is completely optional.',
+              AppConstants.developerName,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Independent Developer & Creator of Flowra\nBuilding offline-first productivity tools.',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 14,
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
-                height: 1.5,
+                height: 1.4,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 20),
+
+            // ─── 2. Social Link Buttons ───────────────────────────
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.code_rounded, size: 20),
+                    label: const Text('GitHub', overflow: TextOverflow.ellipsis),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      foregroundColor: isDark ? Colors.white : Colors.black87,
+                    ),
+                    onPressed: () => _launchUrlHelper(AppConstants.githubProfileUrl),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.camera_alt_rounded, size: 20),
+                    label: const Text('Instagram', overflow: TextOverflow.ellipsis),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFFE1306C),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () => _launchUrlHelper(AppConstants.instagramUrl),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 28),
+
+            // ─── 3. Existing Donation UI ──────────────────────────
+            Divider(
+              color: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
+              thickness: 1,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.pink.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.favorite_rounded, color: Colors.pink, size: 20),
+                ),
+                const SizedBox(width: 10),
+                const Text(
+                  'Support Flowra',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Flowra is free and 100% offline. If it helps you manage your time or money, consider supporting its development with an optional donation.',
+              style: TextStyle(
+                fontSize: 14,
+                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                height: 1.4,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
 
             // Preset amounts
             Wrap(
@@ -142,8 +266,8 @@ class _DonationScreenState extends State<DonationScreen> {
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    width: 80,
-                    height: 56,
+                    width: 76,
+                    height: 52,
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppTheme.primaryIndigo
@@ -160,7 +284,7 @@ class _DonationScreenState extends State<DonationScreen> {
                       child: Text(
                         '₹$amount',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w700,
                           color: isSelected
                               ? Colors.white
@@ -188,25 +312,48 @@ class _DonationScreenState extends State<DonationScreen> {
               onChanged: (_) =>
                   setState(() => _selectedAmount = null),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
             // Donate button
             SizedBox(
               width: double.infinity,
-              child: PrimaryButton(
-                label: _amount > 0
-                    ? 'Donate ₹$_amount'
-                    : 'Select an Amount',
-                icon: Icons.favorite_rounded,
-                color: Colors.pink,
-                onPressed: _amount > 0 ? _donate : null,
+              child: GestureDetector(
+                onLongPress: _copyUpiId,
+                child: PrimaryButton(
+                  label: _amount > 0
+                      ? 'Donate ₹$_amount'
+                      : 'Select an Amount',
+                  icon: Icons.favorite_rounded,
+                  color: Colors.pink,
+                  onPressed: _amount > 0 ? _donate : null,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Copy UPI ID button
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _copyUpiId,
+                icon: const Icon(Icons.copy_rounded, size: 16),
+                label: Text(
+                  'Copy UPI ID: ${AppConstants.donationUpiId}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 12),
 
             // Disclaimer
             Text(
-              'You will complete the payment in your UPI/payment app. TimeCash does not store card or bank details.',
+              'You will complete the payment in your UPI/payment app. Flowra does not store card or bank details.',
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey[500],
@@ -240,7 +387,7 @@ class _DonationScreenState extends State<DonationScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Your donation helps keep TimeCash free and ad-free.',
+                      'Your donation helps keep Flowra free and ad-free.',
                       style: TextStyle(
                           fontSize: 14, color: Colors.grey[500]),
                       textAlign: TextAlign.center,
@@ -252,118 +399,41 @@ class _DonationScreenState extends State<DonationScreen> {
 
             const SizedBox(height: 32),
 
-            // ── Footer ────────────────────────────────────
+            // ─── 4. Footer ────────────────────────────────────────
             Divider(
               color: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
               thickness: 1,
             ),
-            const SizedBox(height: 20),
-
-            // Social links row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _SocialIconButton(
-                  icon: Icons.code_rounded,
-                  label: 'GitHub',
-                  url: AppConstants.githubProfileUrl,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-                const SizedBox(width: 24),
-                _SocialIconButton(
-                  icon: Icons.camera_alt_rounded,
-                  label: 'Instagram',
-                  url: AppConstants.instagramUrl,
-                  color: const Color(0xFFE1306C),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Copyright
+            const SizedBox(height: 16),
             Text(
-              '© ${DateTime.now().year} ${AppConstants.developerName}',
+              '© ${DateTime.now().year} ${AppConstants.developerName}. All rights reserved.',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: isDark ? Colors.grey[500] : Colors.grey[600],
+                color: isDark ? Colors.grey[400] : Colors.grey[700],
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
               'Made with ❤️ in India',
               style: TextStyle(
                 fontSize: 12,
-                color: isDark ? Colors.grey[600] : Colors.grey[400],
+                color: isDark ? Colors.grey[500] : Colors.grey[500],
               ),
               textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'TimeCash is open-source and free to use.',
-              style: TextStyle(
-                fontSize: 11,
-                color: isDark ? Colors.grey[700] : Colors.grey[400],
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// A tappable social-media icon with label for the donation footer.
-class _SocialIconButton extends StatelessWidget {
-  const _SocialIconButton({
-    required this.icon,
-    required this.label,
-    required this.url,
-    required this.color,
-  });
-
-  final IconData icon;
-  final String label;
-  final String url;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () async {
-        final uri = Uri.parse(url);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: color, size: 24),
             ),
             const SizedBox(height: 6),
             Text(
-              label,
+              'If Flowra helps you, consider supporting its development ❤️',
               style: TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: color,
+                color: isDark ? Colors.grey[500] : Colors.grey[500],
+                fontStyle: FontStyle.italic,
               ),
+              textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 24),
           ],
         ),
       ),

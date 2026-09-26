@@ -4,6 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timecash/models/task.dart';
+import 'package:timecash/providers/settings_provider.dart';
 import 'package:timecash/providers/task_provider.dart';
 import 'package:timecash/utils/constants.dart';
 import 'package:timecash/utils/helpers.dart';
@@ -25,6 +26,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
   final _notesController = TextEditingController();
 
   String _subject = AppConstants.taskSubjects.first;
+  bool _subjectInitialized = false;
   DateTime _date = DateTime.now();
   TimeOfDay _startTime = TimeOfDay.now();
   TimeOfDay _endTime =
@@ -36,6 +38,19 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
   bool _isSaving = false;
 
   bool get isEditing => widget.task != null;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_subjectInitialized && !isEditing) {
+      final role = context.read<SettingsProvider>().userRole;
+      final roleSubjects = AppConstants.getTaskSubjectsForRole(role);
+      if (roleSubjects.isNotEmpty) {
+        _subject = roleSubjects.first;
+      }
+      _subjectInitialized = true;
+    }
+  }
 
   @override
   void initState() {
@@ -220,7 +235,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
               controller: _titleController,
               decoration: const InputDecoration(
                 labelText: 'Task Title',
-                hintText: 'e.g. Math — Chapter 3',
+                hintText: 'e.g. Project review / Math revision',
                 prefixIcon: Icon(Icons.edit_rounded),
               ),
               textCapitalization: TextCapitalization.sentences,
@@ -230,16 +245,27 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
             const SizedBox(height: 16),
 
             // Subject/Category
-            DropdownButtonFormField<String>(
-              initialValue: _subject,
-              decoration: const InputDecoration(
-                labelText: 'Category',
-                prefixIcon: Icon(Icons.category_rounded),
-              ),
-              items: AppConstants.taskSubjects
-                  .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                  .toList(),
-              onChanged: (v) => setState(() => _subject = v!),
+            Builder(
+              builder: (ctx) {
+                final role = ctx.watch<SettingsProvider>().userRole;
+                final roleSubjects = AppConstants.getTaskSubjectsForRole(role);
+                final subjects = roleSubjects.contains(_subject)
+                    ? roleSubjects
+                    : [_subject, ...roleSubjects];
+                return DropdownButtonFormField<String>(
+                  initialValue: _subject,
+                  decoration: const InputDecoration(
+                    labelText: 'Category',
+                    prefixIcon: Icon(Icons.category_rounded),
+                  ),
+                  items: subjects
+                      .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                      .toList(),
+                  onChanged: (v) {
+                    if (v != null) setState(() => _subject = v);
+                  },
+                );
+              },
             ),
             const SizedBox(height: 16),
 

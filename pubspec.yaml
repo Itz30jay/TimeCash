@@ -1,10 +1,10 @@
 name: timecash
-description: "TimeCash - Offline study planner & expense tracker for students"
+description: "Flowra - Offline planner & expense tracker for everyone — students, working professionals, and anyone managing their time and money."
 publish_to: 'none'
 version: 1.0.0+1
-homepage: https://github.com/Itz30jay/TimeCash
-repository: https://github.com/Itz30jay/TimeCash
-issue_tracker: https://github.com/Itz30jay/TimeCash/issues
+homepage: https://github.com/Itz30jay
+repository: https://github.com/Itz30jay
+issue_tracker: https://github.com/Itz30jay
 
 environment:
   sdk: ^3.5.0
@@ -32,8 +32,18 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#1E1B4B"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/icon/

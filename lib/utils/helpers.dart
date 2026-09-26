@@ -65,15 +65,34 @@ class DateTimeHelper {
     return DateFormat('EEE').format(date);
   }
 
+  static String formatDateTime(DateTime date, [String? time]) {
+    if (time != null && time.isNotEmpty) {
+      try {
+        final parsed = parseTimeFromDb(time, date);
+        return DateFormat('d MMM yyyy · h:mm a').format(parsed);
+      } catch (_) {}
+    }
+    return DateFormat('d MMM yyyy · h:mm a').format(date);
+  }
+
   static String formatFullDateTime(DateTime date) {
     return DateFormat('d MMM yyyy, h:mm a').format(date);
   }
 
-  static String getGreeting() {
+  static String getGreeting({String? name}) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
+    String base;
+    if (hour < 12) {
+      base = 'Good morning';
+    } else if (hour < 17) {
+      base = 'Good afternoon';
+    } else {
+      base = 'Good evening';
+    }
+    if (name != null && name.isNotEmpty) {
+      return '$base, $name 👋';
+    }
+    return base;
   }
 
   static String getRelativeTime(DateTime dateTime) {

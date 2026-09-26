@@ -2,6 +2,7 @@
 /// Handles tasks, expenses, budgets, and settings storage.
 library;
 
+import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:timecash/models/task.dart';
@@ -22,12 +23,23 @@ class DatabaseService {
 
   Future<Database> _initDb() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'timecash.db');
+    final path = join(dbPath, 'flowra.db');
+    final oldPath = join(dbPath, 'timecash.db');
+
+    try {
+      if (!await databaseExists(path) && await databaseExists(oldPath)) {
+        final oldFile = File(oldPath);
+        if (await oldFile.exists()) {
+          await oldFile.copy(path);
+        }
+      }
+    } catch (_) {}
 
     return openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -59,6 +71,7 @@ class DatabaseService {
         note TEXT,
         payment_method TEXT,
         date TEXT NOT NULL,
+        time TEXT,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       )
@@ -88,6 +101,12 @@ class DatabaseService {
     await db.execute('CREATE INDEX idx_budgets_month ON budgets(month)');
     await db.execute(
         'CREATE UNIQUE INDEX idx_budgets_cat_month ON budgets(category, month)');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE expenses ADD COLUMN time TEXT');
+    }
   }
 
   // ─── Task Operations ──────────────────────────────────────────────────
@@ -337,7 +356,7 @@ class DatabaseService {
       'expenses',
       where: 'date = ?',
       whereArgs: [date],
-      orderBy: 'created_at DESC',
+      orderBy: 'time DESC, created_at DESC',
     );
     return maps.map((m) => Expense.fromMap(m)).toList();
   }
@@ -349,7 +368,7 @@ class DatabaseService {
       'expenses',
       where: 'date >= ? AND date <= ?',
       whereArgs: [startDate, endDate],
-      orderBy: 'date DESC, created_at DESC',
+      orderBy: 'date DESC, time DESC, created_at DESC',
     );
     return maps.map((m) => Expense.fromMap(m)).toList();
   }
@@ -360,7 +379,7 @@ class DatabaseService {
       'expenses',
       where: 'date LIKE ?',
       whereArgs: ['$month%'],
-      orderBy: 'date DESC, created_at DESC',
+      orderBy: 'date DESC, time DESC, created_at DESC',
     );
     return maps.map((m) => Expense.fromMap(m)).toList();
   }
@@ -420,7 +439,8 @@ class DatabaseService {
 
   Future<List<Expense>> getAllExpenses() async {
     final db = await database;
-    final maps = await db.query('expenses', orderBy: 'date DESC, created_at DESC');
+    final maps =
+        await db.query('expenses', orderBy: 'date DESC, time DESC, created_at DESC');
     return maps.map((m) => Expense.fromMap(m)).toList();
   }
 
@@ -572,9 +592,10 @@ class DatabaseService {
       Expense(
         amount: 120.0,
         category: 'Food',
-        note: 'College Canteen Lunch',
+        note: 'Cafeteria Lunch',
         paymentMethod: 'UPI',
         date: today,
+        time: '12:45',
         createdAt: nowIso,
         updatedAt: nowIso,
       ),
@@ -584,15 +605,17 @@ class DatabaseService {
         note: 'Monthly Metro Card Reload',
         paymentMethod: 'UPI',
         date: today,
+        time: '08:30',
         createdAt: nowIso,
         updatedAt: nowIso,
       ),
       Expense(
         amount: 450.0,
-        category: 'College',
-        note: 'Engineering Mathematics Textbook',
+        category: 'Books / Supplies',
+        note: 'Reference Textbook & Stationery',
         paymentMethod: 'Card',
         date: today,
+        time: '15:10',
         createdAt: nowIso,
         updatedAt: nowIso,
       ),
@@ -602,24 +625,27 @@ class DatabaseService {
         note: 'Monthly 5G Data Pack',
         paymentMethod: 'UPI',
         date: today,
+        time: '10:15',
         createdAt: nowIso,
         updatedAt: nowIso,
       ),
       Expense(
         amount: 85.0,
         category: 'Food',
-        note: 'Coffee with Study Group',
+        note: 'Coffee & Snacks',
         paymentMethod: 'Cash',
         date: today,
+        time: '17:20',
         createdAt: nowIso,
         updatedAt: nowIso,
       ),
       Expense(
         amount: 160.0,
-        category: 'College',
-        note: 'Spiral Notebooks & Pen Set',
+        category: 'Books / Supplies',
+        note: 'Notebooks & Pen Set',
         paymentMethod: 'Cash',
         date: today,
+        time: '14:05',
         createdAt: nowIso,
         updatedAt: nowIso,
       ),
@@ -629,6 +655,7 @@ class DatabaseService {
         note: 'Weekend Movie Ticket',
         paymentMethod: 'UPI',
         date: today,
+        time: '19:40',
         createdAt: nowIso,
         updatedAt: nowIso,
       ),

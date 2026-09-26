@@ -33,10 +33,82 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     });
   }
 
+  ExpenseGroupBy _groupBy = ExpenseGroupBy.day;
+
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  Widget _buildGroupSegmentedControl() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: SizedBox(
+        width: double.infinity,
+        child: SegmentedButton<ExpenseGroupBy>(
+          segments: const [
+            ButtonSegment(
+              value: ExpenseGroupBy.day,
+              label: Text('Day'),
+              icon: Icon(Icons.calendar_view_day_rounded, size: 16),
+            ),
+            ButtonSegment(
+              value: ExpenseGroupBy.week,
+              label: Text('Week'),
+              icon: Icon(Icons.calendar_view_week_rounded, size: 16),
+            ),
+            ButtonSegment(
+              value: ExpenseGroupBy.month,
+              label: Text('Month'),
+              icon: Icon(Icons.calendar_view_month_rounded, size: 16),
+            ),
+          ],
+          selected: {_groupBy},
+          onSelectionChanged: (Set<ExpenseGroupBy> newSelection) {
+            setState(() {
+              _groupBy = newSelection.first;
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGroupHeader(ExpenseGroup group, String symbol, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              group.title,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: isDark ? Colors.grey[300] : Colors.grey[700],
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryIndigo.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              CurrencyHelper.format(group.total, symbol),
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: AppTheme.primaryIndigo,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -151,7 +223,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionHeader(title: 'Recent Expenses'),
+                  const SectionHeader(title: 'Expenses'),
+                  _buildGroupSegmentedControl(),
                   // Search bar
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -207,9 +280,11 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
               ),
             ),
 
-            // Expense list
+            // Expense list grouped by Day, Week, or Month
             () {
-              final allExpenses = expenseProvider.monthExpenses;
+              final allExpenses = expenseProvider.allExpenses.isNotEmpty
+                  ? expenseProvider.allExpenses
+                  : expenseProvider.monthExpenses;
               final filtered = allExpenses.where((e) {
                 final matchesCategory =
                     _selectedCategory == 'All' || e.category == _selectedCategory;
@@ -252,19 +327,27 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 );
               }
 
+              final groups = expenseProvider.groupExpenses(filtered, _groupBy);
+              final items = <Widget>[];
+              for (final group in groups) {
+                items.add(_buildGroupHeader(group, symbol, isDark));
+                for (final expense in group.expenses) {
+                  items.add(ExpenseCard(
+                    expense: expense,
+                    currencySymbol: symbol,
+                    onTap: () => _editExpense(expense),
+                    onDelete: () => _deleteExpense(expense),
+                  ));
+                }
+              }
+
               return SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    if (index >= filtered.length) return null;
-                    final expense = filtered[index];
-                    return ExpenseCard(
-                      expense: expense,
-                      currencySymbol: symbol,
-                      onTap: () => _editExpense(expense),
-                      onDelete: () => _deleteExpense(expense),
-                    );
+                    if (index >= items.length) return null;
+                    return items[index];
                   },
-                  childCount: filtered.length,
+                  childCount: items.length,
                 ),
               );
             }(),

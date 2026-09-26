@@ -23,6 +23,7 @@ class _StudyFocusScreenState extends State<StudyFocusScreen> {
   static const List<int> _presetMinutes = [25, 45, 60, 5, 15];
 
   late int _selectedMinutes;
+  int? _customMinutes;
   late int _remainingSeconds;
   Timer? _timer;
   bool _isRunning = false;
@@ -31,7 +32,7 @@ class _StudyFocusScreenState extends State<StudyFocusScreen> {
   final List<String> _motivationalQuotes = [
     'Deep focus produces outstanding results.',
     'Small consistent efforts lead to massive success.',
-    'Put your phone on silent and own this study hour.',
+    'Put your phone on silent and own this focus session.',
     'Discipline is choosing between what you want now and what you want most.',
     'One focused hour is worth three distracted hours.',
   ];
@@ -58,6 +59,98 @@ class _StudyFocusScreenState extends State<StudyFocusScreen> {
       _remainingSeconds = minutes * 60;
       _quoteIndex = (_quoteIndex + 1) % _motivationalQuotes.length;
     });
+  }
+
+  Future<void> _showCustomTimerDialog() async {
+    final controller = TextEditingController(
+      text: _customMinutes != null ? '$_customMinutes' : '',
+    );
+    final formKey = GlobalKey<FormState>();
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.timer_outlined, color: AppTheme.primaryIndigo),
+            SizedBox(width: 8),
+            Text('Custom Focus Timer'),
+          ],
+        ),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Enter duration in minutes:'),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: controller,
+                autofocus: true,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: const InputDecoration(
+                  hintText: 'e.g. 30',
+                  suffixText: 'min',
+                  prefixIcon: Icon(Icons.hourglass_top_rounded),
+                ),
+                validator: (v) {
+                  final val = int.tryParse(v?.trim() ?? '');
+                  if (val == null || val <= 0) {
+                    return 'Please enter minutes greater than 0';
+                  }
+                  if (val > 720) {
+                    return 'Maximum duration is 720 minutes (12h)';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'Quick presets:',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [10, 20, 30, 90, 120].map((mins) {
+                  return ActionChip(
+                    label: Text('${mins}m'),
+                    onPressed: () {
+                      controller.text = '$mins';
+                    },
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (formKey.currentState?.validate() ?? false) {
+                final mins = int.parse(controller.text.trim());
+                Navigator.pop(ctx);
+                setState(() {
+                  _customMinutes = mins;
+                });
+                _selectPreset(mins);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryIndigo,
+            ),
+            child: const Text('Set Timer'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _toggleTimer() {
@@ -120,8 +213,8 @@ class _StudyFocusScreenState extends State<StudyFocusScreen> {
         ),
         content: Text(
           _selectedTask != null
-              ? 'Great job! You finished your study session for "${_selectedTask!.title}".'
-              : 'Great job! You finished your $_selectedMinutes minute study session.',
+              ? 'Great job! You finished your focus session for "${_selectedTask!.title}".'
+              : 'Great job! You finished your $_selectedMinutes minute focus session.',
         ),
         actions: [
           ElevatedButton(
@@ -157,7 +250,7 @@ class _StudyFocusScreenState extends State<StudyFocusScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Study Focus Mode'),
+        title: const Text('Focus Mode'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
@@ -267,24 +360,56 @@ class _StudyFocusScreenState extends State<StudyFocusScreen> {
 
               const SizedBox(height: 14),
 
-              // Preset duration chips
+              // Preset & Custom duration chips
               Wrap(
                 spacing: 8,
-                children: _presetMinutes.map((m) {
-                  final isSelected = _selectedMinutes == m;
-                  final isBreak = m <= 15;
-                  return ChoiceChip(
-                    label: Text(isBreak ? '${m}m Break' : '${m}m Study'),
-                    selected: isSelected,
-                    onSelected: _isRunning ? null : (_) => _selectPreset(m),
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  ..._presetMinutes.map((m) {
+                    final isSelected =
+                        _selectedMinutes == m && _customMinutes == null;
+                    final isBreak = m <= 15;
+                    return ChoiceChip(
+                      label: Text(isBreak ? '${m}m Break' : '${m}m Study'),
+                      selected: isSelected,
+                      onSelected: _isRunning
+                          ? null
+                          : (_) {
+                              setState(() => _customMinutes = null);
+                              _selectPreset(m);
+                            },
+                      selectedColor:
+                          AppTheme.primaryIndigo.withValues(alpha: 0.2),
+                      labelStyle: TextStyle(
+                        fontWeight:
+                            isSelected ? FontWeight.w700 : FontWeight.w500,
+                        color: isSelected ? AppTheme.primaryIndigo : null,
+                      ),
+                    );
+                  }),
+                  ChoiceChip(
+                    avatar: const Icon(Icons.edit_calendar_rounded, size: 16),
+                    label: Text(
+                      _customMinutes != null
+                          ? '${_customMinutes}m Custom'
+                          : 'Custom',
+                    ),
+                    selected: _customMinutes != null,
+                    onSelected:
+                        _isRunning ? null : (_) => _showCustomTimerDialog(),
                     selectedColor:
                         AppTheme.primaryIndigo.withValues(alpha: 0.2),
                     labelStyle: TextStyle(
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                      color: isSelected ? AppTheme.primaryIndigo : null,
+                      fontWeight: _customMinutes != null
+                          ? FontWeight.w700
+                          : FontWeight.w500,
+                      color: _customMinutes != null
+                          ? AppTheme.primaryIndigo
+                          : null,
                     ),
-                  );
-                }).toList(),
+                  ),
+                ],
               ),
 
               const SizedBox(height: 14),

@@ -28,6 +28,7 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
   String _category = AppConstants.expenseCategories.first;
   String _paymentMethod = AppConstants.paymentMethods.first;
   DateTime _date = DateTime.now();
+  TimeOfDay _time = TimeOfDay.now();
   bool _isSaving = false;
 
   bool get isEditing => widget.expense != null;
@@ -42,6 +43,15 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
       _category = e.category;
       _paymentMethod = e.paymentMethod ?? AppConstants.paymentMethods.first;
       _date = DateTimeHelper.parseDateFromDb(e.date);
+      if (e.time != null && e.time!.isNotEmpty) {
+        final parts = e.time!.split(':');
+        if (parts.length == 2) {
+          _time = TimeOfDay(
+            hour: int.tryParse(parts[0]) ?? TimeOfDay.now().hour,
+            minute: int.tryParse(parts[1]) ?? TimeOfDay.now().minute,
+          );
+        }
+      }
     }
   }
 
@@ -62,12 +72,22 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
     if (picked != null) setState(() => _date = picked);
   }
 
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _time,
+    );
+    if (picked != null) setState(() => _time = picked);
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSaving = true);
 
     final now = DateTime.now().toIso8601String();
+    final formattedTime =
+        '${_time.hour.toString().padLeft(2, '0')}:${_time.minute.toString().padLeft(2, '0')}';
     final expense = Expense(
       id: widget.expense?.id,
       amount: double.parse(_amountController.text.trim()),
@@ -77,6 +97,7 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
           : _noteController.text.trim(),
       paymentMethod: _paymentMethod,
       date: DateTimeHelper.formatDateForDb(_date),
+      time: formattedTime,
       createdAt: widget.expense?.createdAt ?? now,
       updatedAt: now,
     );
@@ -182,16 +203,43 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Date
-            InkWell(
-              onTap: _pickDate,
-              child: InputDecorator(
-                decoration: const InputDecoration(
-                  labelText: 'Date',
-                  prefixIcon: Icon(Icons.calendar_today_rounded),
+            // Date & Time
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: InkWell(
+                    onTap: _pickDate,
+                    child: InputDecorator(
+                      decoration: const InputDecoration(
+                        labelText: 'Date',
+                        prefixIcon: Icon(Icons.calendar_today_rounded),
+                      ),
+                      child: Text(
+                        DateTimeHelper.formatDate(_date),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
                 ),
-                child: Text(DateTimeHelper.formatDate(_date)),
-              ),
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: InkWell(
+                    onTap: _pickTime,
+                    child: InputDecorator(
+                      decoration: const InputDecoration(
+                        labelText: 'Time',
+                        prefixIcon: Icon(Icons.access_time_rounded),
+                      ),
+                      child: Text(
+                        _time.format(context),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
 

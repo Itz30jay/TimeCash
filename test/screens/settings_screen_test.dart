@@ -38,6 +38,7 @@ void main() {
 
       // Verify sections
       expect(find.text('Notifications'), findsOneWidget);
+      expect(find.text('Profile'), findsOneWidget);
       expect(find.text('Appearance'), findsOneWidget);
       expect(find.text('Budget & Currency'), findsOneWidget);
       expect(find.text('Data'), findsOneWidget);
@@ -46,18 +47,20 @@ void main() {
       // Verify specific tiles
       expect(find.text('Notification Permission'), findsOneWidget);
       expect(find.text('Exact Alarm Permission'), findsOneWidget);
+      expect(find.text('Name'), findsOneWidget);
+      expect(find.text('Role'), findsOneWidget);
       expect(find.text('Theme'), findsOneWidget);
       expect(find.text('Currency'), findsOneWidget);
       expect(find.text('Monthly Budget'), findsOneWidget);
-      expect(find.text('Load Demo Student Data'), findsOneWidget);
+      expect(find.text('Load Sample Data'), findsOneWidget);
       expect(find.text('Export Expenses as CSV'), findsOneWidget);
       expect(find.text('Clear All Data'), findsOneWidget);
-      expect(find.text('Support the Developer'), findsOneWidget);
-      expect(find.text('View Source Code'), findsOneWidget);
-      expect(find.text('About TimeCash'), findsOneWidget);
+      expect(find.text('About the Developer'), findsOneWidget);
+      expect(find.text('View Source Code'), findsNothing);
+      expect(find.text('About Flowra'), findsOneWidget);
     });
 
-    testWidgets('tapping About TimeCash opens dialog with version and GitHub link', (tester) async {
+    testWidgets('tapping About Flowra opens dialog with version and GitHub link', (tester) async {
       tester.view.physicalSize = const Size(800, 1600);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -75,12 +78,12 @@ void main() {
         ),
       );
 
-      // Tap About TimeCash
-      await tester.tap(find.text('About TimeCash'));
+      // Tap About Flowra
+      await tester.tap(find.text('About Flowra'));
       await tester.pumpAndSettle();
 
       // Verify dialog is shown
-      expect(find.text('TimeCash'), findsWidgets);
+      expect(find.text('Flowra'), findsWidgets);
       expect(find.textContaining('100% offline'), findsOneWidget);
       expect(find.text('GitHub'), findsOneWidget);
       expect(find.text('Close'), findsOneWidget);

@@ -109,7 +109,7 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'To receive sound during silent mode, allow TimeCash under Do Not Disturb exceptions or allow Alarms & reminders in Settings → Apps → TimeCash → Notifications.',
+                      'To receive sound during silent mode, allow Flowra under Do Not Disturb exceptions or allow Alarms & reminders in Settings → Apps → Flowra → Notifications.',
                       style: TextStyle(
                           fontSize: 13, color: Colors.grey[500], height: 1.4),
                     ),
@@ -117,6 +117,23 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+
+          // ─── Profile ────────────────────────────────────────────
+          _SectionTitle('Profile'),
+          _SettingsTile(
+            icon: Icons.person_rounded,
+            title: 'Name',
+            subtitle: settings.userName.isNotEmpty
+                ? settings.userName
+                : 'Not set — tap to add',
+            onTap: () => _showNameDialog(context, settings),
+          ),
+          _SettingsTile(
+            icon: Icons.badge_rounded,
+            title: 'Role',
+            subtitle: settings.userRole,
+            onTap: () => _showRoleDialog(context, settings),
           ),
 
           // ─── Appearance ─────────────────────────────────────────
@@ -157,7 +174,7 @@ class SettingsScreen extends StatelessWidget {
           _SectionTitle('Data'),
           _SettingsTile(
             icon: Icons.auto_awesome_rounded,
-            title: 'Load Demo Student Data',
+            title: 'Load Sample Data',
             subtitle: 'Populate sample timetable and expenses',
             onTap: () => _loadSampleData(context),
           ),
@@ -178,9 +195,9 @@ class SettingsScreen extends StatelessWidget {
           // ─── About ─────────────────────────────────────────────
           _SectionTitle('About'),
           _SettingsTile(
-            icon: Icons.favorite_rounded,
-            title: 'Support the Developer',
-            subtitle: 'Make a donation',
+            icon: Icons.person_rounded,
+            title: 'About the Developer',
+            subtitle: 'Connect & support',
             trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
             onTap: () => Navigator.push(
               context,
@@ -188,22 +205,71 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           _SettingsTile(
-            icon: Icons.code_rounded,
-            title: 'View Source Code',
-            subtitle: 'Open on GitHub',
-            trailing: const Icon(Icons.open_in_new_rounded, size: 16),
-            onTap: () => launchUrl(
-              Uri.parse(AppConstants.githubRepoUrl),
-              mode: LaunchMode.externalApplication,
-            ),
-          ),
-          _SettingsTile(
             icon: Icons.info_rounded,
-            title: 'About TimeCash',
+            title: 'About Flowra',
             subtitle: 'v${AppConstants.appVersion}',
             onTap: () => _showAboutDialog(context),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showNameDialog(BuildContext context, SettingsProvider settings) {
+    final controller = TextEditingController(text: settings.userName);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Your Name'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textCapitalization: TextCapitalization.words,
+          decoration: const InputDecoration(
+            hintText: 'Enter your name',
+            prefixIcon: Icon(Icons.person_rounded),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              settings.setUserName(controller.text.trim());
+              Navigator.pop(ctx);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryIndigo,
+            ),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showRoleDialog(BuildContext context, SettingsProvider settings) {
+    showDialog(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: const Text('Select Your Role'),
+        children: AppConstants.userRoles
+            .map(
+              (role) => ListTile(
+                title: Text(role),
+                trailing: settings.userRole == role
+                    ? const Icon(Icons.check_rounded,
+                        color: AppTheme.primaryIndigo)
+                    : null,
+                onTap: () {
+                  settings.setUserRole(role);
+                  Navigator.pop(ctx);
+                },
+              ),
+            )
+            .toList(),
       ),
     );
   }
@@ -346,9 +412,9 @@ class SettingsScreen extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Load Demo Data'),
+        title: const Text('Load Sample Data'),
         content: const Text(
-          'This will populate your app with sample timetable study sessions and student expense records.\n\nGreat for instantly testing all app features!',
+          'This will populate your app with sample timetable sessions and expense records.\n\nGreat for instantly testing all app features!',
         ),
         actions: [
           TextButton(
@@ -372,7 +438,7 @@ class SettingsScreen extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Sample study sessions and expenses loaded! 🎉'),
+            content: Text('Sample sessions and expenses loaded! 🎉'),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -435,7 +501,7 @@ class SettingsScreen extends StatelessWidget {
                   color: AppTheme.primaryIndigo),
             ),
             const SizedBox(width: 12),
-            const Text('TimeCash'),
+            const Text('Flowra'),
           ],
         ),
         content: Column(
@@ -458,7 +524,7 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => launchUrl(
-              Uri.parse(AppConstants.githubRepoUrl),
+              Uri.parse(AppConstants.githubProfileUrl),
               mode: LaunchMode.externalApplication,
             ),
             child: const Text('GitHub'),

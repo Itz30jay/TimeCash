@@ -26,25 +26,25 @@ void main() {
       );
 
       // Verify page 1 title and Skip button
-      expect(find.text('Plan your study time'), findsOneWidget);
+      expect(find.text('Plan your day'), findsOneWidget);
       expect(find.text('Skip'), findsOneWidget);
 
       // Swipe or tap next to go to page 2
-      await tester.tap(find.byType(ElevatedButton));
+      await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
       // Verify page 2
       expect(find.text('Get reminders even in silent mode'), findsOneWidget);
 
       // Tap next to go to page 3
-      await tester.tap(find.byType(ElevatedButton));
+      await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
       // Verify page 3
       expect(find.text('Track where your money goes'), findsOneWidget);
 
       // Tap next to open setup sheet
-      await tester.tap(find.byType(ElevatedButton));
+      await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
       // Verify setup bottom sheet is displayed

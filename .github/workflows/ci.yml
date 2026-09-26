@@ -1,4 +1,4 @@
-name: TimeCash CI/CD Pipeline
+name: Flowra CI/CD Pipeline
 
 on:
   push:

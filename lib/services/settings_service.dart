@@ -83,4 +83,14 @@ class SettingsService {
       _p.getBool(AppConstants.keyShowNextTaskNotification) ?? false;
   Future<void> setShowNextTaskNotification(bool value) =>
       _p.setBool(AppConstants.keyShowNextTaskNotification, value);
+
+  // User profile
+  String get userName => _p.getString(AppConstants.keyUserName) ?? '';
+  Future<void> setUserName(String name) =>
+      _p.setString(AppConstants.keyUserName, name);
+
+  String get userRole =>
+      _p.getString(AppConstants.keyUserRole) ?? AppConstants.roleStudent;
+  Future<void> setUserRole(String role) =>
+      _p.setString(AppConstants.keyUserRole, role);
 }

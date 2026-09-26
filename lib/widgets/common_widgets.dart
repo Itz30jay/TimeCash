@@ -1,4 +1,4 @@
-/// Reusable widgets for TimeCash.
+/// Reusable widgets for Flowra.
 /// TaskCard, ExpenseCard, StatCard, ChartCard, PrimaryButton,
 /// EmptyState, SectionHeader, and PermissionBanner.
 library;
@@ -6,6 +6,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:timecash/models/task.dart';
 import 'package:timecash/models/expense.dart';
+import 'package:timecash/utils/helpers.dart';
 import 'package:timecash/utils/theme.dart';
 
 // ─── Task Card ──────────────────────────────────────────────────────────
@@ -149,20 +150,24 @@ class TaskCard extends StatelessWidget {
                         ),
                         if (task.subject != null) ...[
                           const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 1),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryIndigo.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              task.subject!,
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: isDark
-                                    ? const Color(0xFFA5B4FC)
-                                    : AppTheme.primaryIndigo,
+                          Flexible(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 1),
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryIndigo.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                task.subject!,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: isDark
+                                      ? const Color(0xFFA5B4FC)
+                                      : AppTheme.primaryIndigo,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ),
@@ -229,6 +234,8 @@ class ExpenseCard extends StatelessWidget {
       case 'Travel':
         return Icons.directions_car_rounded;
       case 'College':
+      case 'Education':
+      case 'Books / Supplies':
         return Icons.school_rounded;
       case 'Recharge / Internet':
         return Icons.wifi_rounded;
@@ -250,6 +257,8 @@ class ExpenseCard extends StatelessWidget {
       case 'Travel':
         return Colors.blue;
       case 'College':
+      case 'Education':
+      case 'Books / Supplies':
         return AppTheme.primaryIndigo;
       case 'Recharge / Internet':
         return Colors.teal;
@@ -261,6 +270,29 @@ class ExpenseCard extends StatelessWidget {
         return AppTheme.dangerRed;
       default:
         return Colors.grey;
+    }
+  }
+
+  String _formattedDateAndTime() {
+    try {
+      final date = DateTimeHelper.parseDateFromDb(expense.date);
+      if (expense.time != null && expense.time!.isNotEmpty) {
+        return DateTimeHelper.formatDateTime(date, expense.time);
+      }
+      final created = DateTime.tryParse(expense.createdAt);
+      if (created != null) {
+        final combined = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          created.hour,
+          created.minute,
+        );
+        return DateTimeHelper.formatDateTime(combined);
+      }
+      return DateTimeHelper.formatDate(date);
+    } catch (_) {
+      return expense.date;
     }
   }
 
@@ -310,6 +342,14 @@ class ExpenseCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
+                    const SizedBox(height: 2),
+                    Text(
+                      _formattedDateAndTime(),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isDark ? Colors.grey[400] : Colors.grey[500],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -404,6 +444,8 @@ class StatCard extends StatelessWidget {
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 2),
               Text(
@@ -414,6 +456,8 @@ class StatCard extends StatelessWidget {
                       ? Colors.grey[400]
                       : Colors.grey[600],
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               if (subtitle != null) ...[
                 const SizedBox(height: 4),
@@ -424,6 +468,8 @@ class StatCard extends StatelessWidget {
                     color: cardColor,
                     fontWeight: FontWeight.w600,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ],
@@ -546,15 +592,28 @@ class PrimaryButton extends StatelessWidget {
     if (icon != null) {
       return Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 20),
           const SizedBox(width: 8),
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Flexible(
+            child: Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       );
     }
 
-    return Text(label, style: const TextStyle(fontWeight: FontWeight.w600));
+    return Text(
+      label,
+      style: const TextStyle(fontWeight: FontWeight.w600),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
   }
 }
 
@@ -704,7 +763,7 @@ class PermissionBanner extends StatelessWidget {
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
-                    'Notifications are disabled. You won\'t receive study reminders.',
+                    'Notifications are disabled. You won\'t receive task reminders.',
                     style: TextStyle(fontSize: 13),
                   ),
                 ),
@@ -779,9 +838,15 @@ class BudgetProgressBar extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(label,
+                Expanded(
+                  child: Text(
+                    label,
                     style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w600)),
+                        fontSize: 14, fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 8),
                 Text(
                   '$currencySymbol${spent.toStringAsFixed(0)} / $currencySymbol${limit.toStringAsFixed(0)}',
                   style: TextStyle(
@@ -808,6 +873,8 @@ class BudgetProgressBar extends StatelessWidget {
                   ? 'Over budget by $currencySymbol${(spent - limit).toStringAsFixed(0)}'
                   : '${(percentage * 100).toStringAsFixed(0)}% used — $currencySymbol${(limit - spent).toStringAsFixed(0)} remaining',
               style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

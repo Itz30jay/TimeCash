@@ -26,7 +26,7 @@ class ExportService {
     final csv = const ListToCsvConverter().convert(rows);
     final dir = await _getExportDir();
     final safeName = monthLabel.replaceAll(RegExp(r'[^\w\s]'), '').replaceAll(' ', '_');
-    final file = File('${dir.path}/timecash_expenses_$safeName.csv');
+    final file = File('${dir.path}/flowra_expenses_$safeName.csv');
     await file.writeAsString(csv);
     return file.path;
   }
@@ -61,7 +61,7 @@ class ExportService {
     final csv = const ListToCsvConverter().convert(rows);
     final dir = await _getExportDir();
     final safeName = label.replaceAll(RegExp(r'[^\w\s]'), '').replaceAll(' ', '_');
-    final file = File('${dir.path}/timecash_tasks_$safeName.csv');
+    final file = File('${dir.path}/flowra_tasks_$safeName.csv');
     await file.writeAsString(csv);
     return file.path;
   }

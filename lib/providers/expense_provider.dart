@@ -10,6 +10,20 @@ import 'package:timecash/services/notification_service.dart';
 import 'package:timecash/services/settings_service.dart';
 import 'package:timecash/utils/helpers.dart';
 
+enum ExpenseGroupBy { day, week, month }
+
+class ExpenseGroup {
+  final String title;
+  final double total;
+  final List<Expense> expenses;
+
+  const ExpenseGroup({
+    required this.title,
+    required this.total,
+    required this.expenses,
+  });
+}
+
 class ExpenseProvider extends ChangeNotifier {
   final DatabaseService _db = DatabaseService();
   final NotificationService _notifService = NotificationService();
@@ -17,6 +31,7 @@ class ExpenseProvider extends ChangeNotifier {
 
   List<Expense> _todayExpenses = [];
   List<Expense> _monthExpenses = [];
+  List<Expense> _allExpenses = [];
   double _todayTotal = 0;
   double _monthTotal = 0;
   Map<String, double> _categoryTotals = {};
@@ -26,6 +41,7 @@ class ExpenseProvider extends ChangeNotifier {
 
   List<Expense> get todayExpenses => _todayExpenses;
   List<Expense> get monthExpenses => _monthExpenses;
+  List<Expense> get allExpenses => _allExpenses;
   double get todayTotal => _todayTotal;
   double get monthTotal => _monthTotal;
   Map<String, double> get categoryTotals => _categoryTotals;
@@ -94,7 +110,100 @@ class ExpenseProvider extends ChangeNotifier {
   Future<void> loadAll() async {
     await loadTodayExpenses();
     await loadMonthExpenses();
+    try {
+      _allExpenses = await _db.getAllExpenses();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading all expenses: $e');
+    }
   }
+
+  List<ExpenseGroup> groupExpenses(
+      List<Expense> expenses, ExpenseGroupBy groupBy) {
+    if (expenses.isEmpty) return [];
+
+    final Map<String, List<Expense>> grouped = {};
+    final Map<String, String> titles = {};
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final currentWeekStart =
+        today.subtract(Duration(days: today.weekday - 1));
+    final lastWeekStart = currentWeekStart.subtract(const Duration(days: 7));
+
+    for (final expense in expenses) {
+      try {
+        final dt = DateTimeHelper.parseDateFromDb(expense.date);
+        final expenseDate = DateTime(dt.year, dt.month, dt.day);
+
+        String key;
+        String title;
+
+        switch (groupBy) {
+          case ExpenseGroupBy.day:
+            key = expense.date;
+            if (expenseDate == today) {
+              title = 'Today • ${DateTimeHelper.formatDateShort(dt)}';
+            } else if (expenseDate == yesterday) {
+              title = 'Yesterday • ${DateTimeHelper.formatDateShort(dt)}';
+            } else {
+              title = DateTimeHelper.formatDate(dt);
+            }
+            break;
+
+          case ExpenseGroupBy.week:
+            final weekStart = expenseDate
+                .subtract(Duration(days: expenseDate.weekday - 1));
+            final weekEnd = weekStart.add(const Duration(days: 6));
+            key = DateTimeHelper.formatDateForDb(weekStart);
+            if (weekStart == currentWeekStart) {
+              title =
+                  'This Week • ${DateTimeHelper.formatDateShort(weekStart)} – ${DateTimeHelper.formatDateShort(weekEnd)}';
+            } else if (weekStart == lastWeekStart) {
+              title =
+                  'Last Week • ${DateTimeHelper.formatDateShort(weekStart)} – ${DateTimeHelper.formatDateShort(weekEnd)}';
+            } else {
+              title =
+                  '${DateTimeHelper.formatDateShort(weekStart)} – ${DateTimeHelper.formatDateShort(weekEnd)}';
+            }
+            break;
+
+          case ExpenseGroupBy.month:
+            key = DateTimeHelper.formatMonthForDb(dt);
+            title = DateTimeHelper.formatMonth(dt);
+            break;
+        }
+
+        grouped.putIfAbsent(key, () => []).add(expense);
+        titles[key] = title;
+      } catch (_) {
+        grouped.putIfAbsent(expense.date, () => []).add(expense);
+        titles[expense.date] = expense.date;
+      }
+    }
+
+    final sortedKeys = grouped.keys.toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    return sortedKeys.map((k) {
+      final list = grouped[k]!;
+      final total = list.fold<double>(0.0, (sum, e) => sum + e.amount);
+      return ExpenseGroup(
+        title: titles[k] ?? k,
+        total: total,
+        expenses: list,
+      );
+    }).toList();
+  }
+
+  List<ExpenseGroup> groupedByDay([List<Expense>? expenses]) =>
+      groupExpenses(expenses ?? (allExpenses.isNotEmpty ? allExpenses : monthExpenses), ExpenseGroupBy.day);
+
+  List<ExpenseGroup> groupedByWeek([List<Expense>? expenses]) =>
+      groupExpenses(expenses ?? (allExpenses.isNotEmpty ? allExpenses : monthExpenses), ExpenseGroupBy.week);
+
+  List<ExpenseGroup> groupedByMonth([List<Expense>? expenses]) =>
+      groupExpenses(expenses ?? (allExpenses.isNotEmpty ? allExpenses : monthExpenses), ExpenseGroupBy.month);
 
   Future<bool> addExpense(Expense expense) async {
     try {

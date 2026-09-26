@@ -101,7 +101,7 @@ void main() {
 
       // Verify StudyFocusScreen opened
       expect(find.byType(StudyFocusScreen), findsOneWidget);
-      expect(find.text('Study Focus Mode'), findsOneWidget);
+      expect(find.text('Focus Mode'), findsOneWidget);
     });
   });
 }

@@ -1,10 +1,10 @@
-# TimeCash ⏳💰
+# Flowra ⏳💰
 
-[![CI/CD Pipeline](https://github.com/Itz30jay/TimeCash/actions/workflows/ci.yml/badge.svg)](https://github.com/Itz30jay/TimeCash/actions/workflows/ci.yml)
+[![CI/CD Pipeline](https://github.com/Itz30jay/Flowra/actions/workflows/ci.yml/badge.svg)](https://github.com/Itz30jay/Flowra/actions/workflows/ci.yml)
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.5%2B-02569B?logo=flutter)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-**TimeCash** is a 100% offline-first Flutter mobile application built specifically for students. It combines a study timetable scheduler with strong reminders and an intuitive daily expense tracker.
+**Flowra** is a 100% offline-first Flutter mobile application for everyone — students, working professionals, and anyone managing their time and money. It combines a routine & task planner with strong reminders, focus timer, and an intuitive daily expense tracker.
 
 > **Zero Cloud. Zero Ads. Complete Privacy.**  
 > All study schedules, tasks, expenses, and budget data remain entirely on your device. The app operates reliably across airplane mode, low-power mode, force-close, and phone restarts.
@@ -32,7 +32,7 @@
   - `⏰ Snooze 10m` — Reschedules notification for 10 minutes later.
   - `✓ Done` — Marks task completed directly from notification tray.
 - **Survives Phone Reboot**: Android `BOOT_COMPLETED` receiver automatically reschedules all future alarms upon device restart or timezone change.
-- **Do Not Disturb (DND) Guidance**: Built-in instructions guiding users to whitelist TimeCash in device DND settings.
+- **Do Not Disturb (DND) Guidance**: Built-in instructions guiding users to whitelist Flowra in device DND settings.
 
 ### ⏱️ 3. Study Focus & Pomodoro Mode
 - **Distraction-Free Focus Timer**: Full-screen timer with circular progress ring.
@@ -175,8 +175,8 @@ The output AAB file will be located at:
 
 ## 💡 Tips for Best Reminder Reliability
 
-1. **Battery Optimization**: On devices running aggressive battery managers (Xiaomi/MIUI, OnePlus/OxygenOS, Samsung/OneUI), set TimeCash battery usage to **"Unrestricted"**.
-2. **Do Not Disturb**: Allow TimeCash under **Settings → Sound & vibration → Do Not Disturb → Apps** so alarms can sound during focus hours.
+1. **Battery Optimization**: On devices running aggressive battery managers (Xiaomi/MIUI, OnePlus/OxygenOS, Samsung/OneUI), set Flowra battery usage to **"Unrestricted"**.
+2. **Do Not Disturb**: Allow Flowra under **Settings → Sound & vibration → Do Not Disturb → Apps** so alarms can sound during focus hours.
 3. **Exact Alarms**: Grant the "Alarms & Reminders" permission when prompted on Android 12+.
 
 ---

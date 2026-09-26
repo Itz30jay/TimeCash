@@ -55,7 +55,7 @@ class _ReportsScreenState extends State<ReportsScreen>
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
-            Tab(text: 'Study', icon: Icon(Icons.school_rounded, size: 20)),
+            Tab(text: 'Schedule', icon: Icon(Icons.calendar_month_rounded, size: 20)),
             Tab(text: 'Money', icon: Icon(Icons.payments_rounded, size: 20)),
           ],
           indicatorColor: AppTheme.primaryIndigo,

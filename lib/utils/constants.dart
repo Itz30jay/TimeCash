@@ -1,4 +1,4 @@
-/// TimeCash - Offline Study Planner & Expense Tracker
+/// Flowra - Offline Planner & Expense Tracker
 /// App-wide constants and configuration.
 library;
 
@@ -6,28 +6,28 @@ class AppConstants {
   AppConstants._();
 
   // App info
-  static const String appName = 'TimeCash';
+  static const String appName = 'Flowra';
   static const String appVersion = '1.0.0';
   static const String appDescription =
-      'Offline study planner & expense tracker for students';
-  static const String githubRepoUrl = 'https://github.com/Itz30jay/TimeCash';
+      'Offline planner & expense tracker for everyone — students, working professionals, and anyone managing their time and money.';
+  static const String githubRepoUrl = 'https://github.com/Itz30jay/Flowra';
   static const String githubProfileUrl = 'https://github.com/Itz30jay';
   static const String instagramUrl =
       'https://www.instagram.com/jay_dev._._';
   static const String developerName = 'Jay (Itz30jay)';
 
-  // Donation configuration - change these to your own payment details
-  static const String donationUpiId = 'developer@upi';
-  static const String donationUpiName = 'TimeCash Developer';
+  // Donation configuration
+  static const String donationUpiId = 'jaykishandas30@oksbi';
+  static const String donationUpiName = 'Flowra Developer';
   static const String donationPaymentLink = '';
   // Set to true when you configure a valid UPI ID or payment link
-  static const bool isDonationEnabled = false;
+  static const bool isDonationEnabled = true;
 
   // Notification channel
   static const String studyAlertChannelId = 'study_alerts';
-  static const String studyAlertChannelName = 'Study Alerts';
+  static const String studyAlertChannelName = 'Alerts & Reminders';
   static const String studyAlertChannelDesc =
-      'High-priority reminders for your study schedule';
+      'High-priority reminders for your schedule';
 
   // Default settings
   static const String defaultCurrency = '₹';
@@ -44,17 +44,69 @@ class AppConstants {
   static const String keyPreAlertEnabled = 'pre_alert_enabled';
   static const String keyPreAlertMinutes = 'pre_alert_minutes';
   static const String keyShowNextTaskNotification = 'show_next_task_notif';
+  static const String keyUserName = 'user_name';
+  static const String keyUserRole = 'user_role';
 
-  // Task categories/subjects
+  // User roles
+  static const String roleStudent = 'Student';
+  static const String roleProfessional = 'Working Professional';
+  static const String roleOther = 'Other';
+  static const List<String> userRoles = [
+    roleStudent,
+    roleProfessional,
+    roleOther,
+  ];
+
+  // Task categories/subjects covering both work and study contexts
   static const List<String> taskSubjects = [
+    'Work',
     'Study',
-    'Revision',
+    'Meeting',
     'Class',
     'Assignment',
+    'Revision',
+    'Exam Prep',
+    'Errand',
+    'Exercise',
+    'Health',
+    'Family',
+    'Personal',
+    'Other',
+  ];
+
+  // Default subject lists lightly personalized by role
+  static const List<String> studentSubjects = [
+    'Study',
+    'Class',
+    'Assignment',
+    'Revision',
     'Exam Prep',
     'Exercise',
     'Personal',
   ];
+
+  static const List<String> professionalSubjects = [
+    'Work',
+    'Meeting',
+    'Errand',
+    'Exercise',
+    'Health',
+    'Personal',
+    'Other',
+  ];
+
+  static List<String> getTaskSubjectsForRole(String? role) {
+    if (role == roleStudent) {
+      final set = studentSubjects.toSet();
+      final others = taskSubjects.where((s) => !set.contains(s)).toList();
+      return [...studentSubjects, ...others];
+    } else if (role == roleProfessional) {
+      final set = professionalSubjects.toSet();
+      final others = taskSubjects.where((s) => !set.contains(s)).toList();
+      return [...professionalSubjects, ...others];
+    }
+    return taskSubjects;
+  }
 
   // Task priorities
   static const List<String> taskPriorities = ['Normal', 'Important', 'Critical'];

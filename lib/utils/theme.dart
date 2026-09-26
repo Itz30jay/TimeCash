@@ -1,4 +1,4 @@
-/// Theme configuration for TimeCash.
+/// Theme configuration for Flowra.
 /// Supports light mode, dark mode, and system theme.
 library;
 

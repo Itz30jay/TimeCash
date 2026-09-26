@@ -131,7 +131,7 @@ void main() {
       expect(bDeser.category, 'Overall');
       expect(bDeser.monthlyLimit, 5000.0);
 
-      expect(AppConstants.appName, 'TimeCash');
+      expect(AppConstants.appName, 'Flowra');
       expect(AppConstants.defaultCurrency, '₹');
       expect(AppConstants.defaultCurrencyCode, 'INR');
       expect(AppConstants.studyAlertChannelId, 'study_alerts');
