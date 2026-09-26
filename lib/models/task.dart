@@ -1,7 +1,7 @@
 /// Task model for study schedule items.
 library;
 
-import 'package:timecash/utils/constants.dart';
+import 'package:flowra/utils/constants.dart';
 
 class Task {
   final int? id;

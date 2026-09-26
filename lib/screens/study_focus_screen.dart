@@ -5,10 +5,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:timecash/models/task.dart';
-import 'package:timecash/providers/task_provider.dart';
-import 'package:timecash/utils/theme.dart';
-import 'package:timecash/widgets/common_widgets.dart';
+import 'package:flowra/models/task.dart';
+import 'package:flowra/providers/task_provider.dart';
+import 'package:flowra/utils/theme.dart';
+import 'package:flowra/widgets/common_widgets.dart';
 
 class StudyFocusScreen extends StatefulWidget {
   final Task? initialTask;

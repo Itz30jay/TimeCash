@@ -1,4 +1,4 @@
-package com.timecash.timecash
+package com.flowra.flowra
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timecash/providers/expense_provider.dart';
-import 'package:timecash/providers/settings_provider.dart';
-import 'package:timecash/providers/task_provider.dart';
-import 'package:timecash/screens/home_screen.dart';
-import 'package:timecash/screens/study_focus_screen.dart';
-import 'package:timecash/services/settings_service.dart';
+import 'package:flowra/providers/expense_provider.dart';
+import 'package:flowra/providers/settings_provider.dart';
+import 'package:flowra/providers/task_provider.dart';
+import 'package:flowra/screens/home_screen.dart';
+import 'package:flowra/screens/study_focus_screen.dart';
+import 'package:flowra/services/settings_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

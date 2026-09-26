@@ -3,11 +3,11 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:timecash/models/task.dart';
-import 'package:timecash/services/database_service.dart';
-import 'package:timecash/services/notification_service.dart';
-import 'package:timecash/services/settings_service.dart';
-import 'package:timecash/utils/helpers.dart';
+import 'package:flowra/models/task.dart';
+import 'package:flowra/services/database_service.dart';
+import 'package:flowra/services/notification_service.dart';
+import 'package:flowra/services/settings_service.dart';
+import 'package:flowra/utils/helpers.dart';
 
 class TaskProvider extends ChangeNotifier {
   final DatabaseService _db = DatabaseService();

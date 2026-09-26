@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:timecash/screens/donation_screen.dart';
+import 'package:flowra/screens/donation_screen.dart';
 
 void main() {
   group('DonationScreen Tests', () {

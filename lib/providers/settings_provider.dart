@@ -2,9 +2,9 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:timecash/services/settings_service.dart';
-import 'package:timecash/services/notification_service.dart';
-import 'package:timecash/utils/constants.dart';
+import 'package:flowra/services/settings_service.dart';
+import 'package:flowra/services/notification_service.dart';
+import 'package:flowra/utils/constants.dart';
 
 class SettingsProvider extends ChangeNotifier {
   final SettingsService _settings = SettingsService();

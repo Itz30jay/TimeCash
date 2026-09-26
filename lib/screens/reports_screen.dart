@@ -4,12 +4,12 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:timecash/providers/task_provider.dart';
-import 'package:timecash/providers/expense_provider.dart';
-import 'package:timecash/providers/settings_provider.dart';
-import 'package:timecash/utils/helpers.dart';
-import 'package:timecash/utils/theme.dart';
-import 'package:timecash/widgets/common_widgets.dart';
+import 'package:flowra/providers/task_provider.dart';
+import 'package:flowra/providers/expense_provider.dart';
+import 'package:flowra/providers/settings_provider.dart';
+import 'package:flowra/utils/helpers.dart';
+import 'package:flowra/utils/theme.dart';
+import 'package:flowra/widgets/common_widgets.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});

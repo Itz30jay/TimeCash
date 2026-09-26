@@ -3,7 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timecash/utils/constants.dart';
+import 'package:flowra/utils/constants.dart';
 
 class SettingsService {
   static final SettingsService _instance = SettingsService._internal();

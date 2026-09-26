@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:timecash/providers/task_provider.dart';
-import 'package:timecash/screens/study_focus_screen.dart';
+import 'package:flowra/providers/task_provider.dart';
+import 'package:flowra/screens/study_focus_screen.dart';
 
 void main() {
   group('StudyFocusScreen Tests', () {

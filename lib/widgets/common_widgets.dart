@@ -4,10 +4,10 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:timecash/models/task.dart';
-import 'package:timecash/models/expense.dart';
-import 'package:timecash/utils/helpers.dart';
-import 'package:timecash/utils/theme.dart';
+import 'package:flowra/models/task.dart';
+import 'package:flowra/models/expense.dart';
+import 'package:flowra/utils/helpers.dart';
+import 'package:flowra/utils/theme.dart';
 
 // ─── Task Card ──────────────────────────────────────────────────────────
 

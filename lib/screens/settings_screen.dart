@@ -4,15 +4,15 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:timecash/providers/settings_provider.dart';
-import 'package:timecash/providers/task_provider.dart';
-import 'package:timecash/providers/expense_provider.dart';
-import 'package:timecash/services/database_service.dart';
-import 'package:timecash/services/export_service.dart';
-import 'package:timecash/screens/donation_screen.dart';
-import 'package:timecash/utils/constants.dart';
-import 'package:timecash/utils/helpers.dart';
-import 'package:timecash/utils/theme.dart';
+import 'package:flowra/providers/settings_provider.dart';
+import 'package:flowra/providers/task_provider.dart';
+import 'package:flowra/providers/expense_provider.dart';
+import 'package:flowra/services/database_service.dart';
+import 'package:flowra/services/export_service.dart';
+import 'package:flowra/screens/donation_screen.dart';
+import 'package:flowra/utils/constants.dart';
+import 'package:flowra/utils/helpers.dart';
+import 'package:flowra/utils/theme.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

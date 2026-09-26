@@ -11,7 +11,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.timecash.timecash"
+    namespace = "com.flowra.flowra"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -27,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.timecash.timecash"
+        applicationId = "com.flowra.flowra"
         minSdk = 26 // Android 8.0 Oreo
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

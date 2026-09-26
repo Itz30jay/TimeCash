@@ -4,9 +4,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:timecash/utils/constants.dart';
-import 'package:timecash/utils/theme.dart';
-import 'package:timecash/widgets/common_widgets.dart';
+import 'package:flowra/utils/constants.dart';
+import 'package:flowra/utils/theme.dart';
+import 'package:flowra/widgets/common_widgets.dart';
 
 class DonationScreen extends StatefulWidget {
   const DonationScreen({super.key});

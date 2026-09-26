@@ -5,9 +5,9 @@ library;
 import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:timecash/models/task.dart';
-import 'package:timecash/models/expense.dart';
-import 'package:timecash/models/budget.dart';
+import 'package:flowra/models/task.dart';
+import 'package:flowra/models/expense.dart';
+import 'package:flowra/models/budget.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();

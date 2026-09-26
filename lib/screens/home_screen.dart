@@ -5,14 +5,14 @@ library;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:timecash/providers/task_provider.dart';
-import 'package:timecash/providers/expense_provider.dart';
-import 'package:timecash/providers/settings_provider.dart';
-import 'package:timecash/utils/helpers.dart';
-import 'package:timecash/utils/theme.dart';
-import 'package:timecash/widgets/common_widgets.dart';
-import 'package:timecash/screens/study_focus_screen.dart';
-import 'package:timecash/screens/add_edit_task_screen.dart';
+import 'package:flowra/providers/task_provider.dart';
+import 'package:flowra/providers/expense_provider.dart';
+import 'package:flowra/providers/settings_provider.dart';
+import 'package:flowra/utils/helpers.dart';
+import 'package:flowra/utils/theme.dart';
+import 'package:flowra/widgets/common_widgets.dart';
+import 'package:flowra/screens/study_focus_screen.dart';
+import 'package:flowra/screens/add_edit_task_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onAddTask;

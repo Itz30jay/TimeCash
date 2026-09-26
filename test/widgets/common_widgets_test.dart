@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:timecash/models/task.dart';
-import 'package:timecash/widgets/common_widgets.dart';
+import 'package:flowra/models/task.dart';
+import 'package:flowra/widgets/common_widgets.dart';
 
 void main() {
   group('Common Widgets Tests', () {

@@ -4,14 +4,14 @@ library;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:timecash/models/expense.dart';
-import 'package:timecash/providers/expense_provider.dart';
-import 'package:timecash/providers/settings_provider.dart';
-import 'package:timecash/screens/add_edit_expense_screen.dart';
-import 'package:timecash/utils/constants.dart';
-import 'package:timecash/utils/helpers.dart';
-import 'package:timecash/utils/theme.dart';
-import 'package:timecash/widgets/common_widgets.dart';
+import 'package:flowra/models/expense.dart';
+import 'package:flowra/providers/expense_provider.dart';
+import 'package:flowra/providers/settings_provider.dart';
+import 'package:flowra/screens/add_edit_expense_screen.dart';
+import 'package:flowra/utils/constants.dart';
+import 'package:flowra/utils/helpers.dart';
+import 'package:flowra/utils/theme.dart';
+import 'package:flowra/widgets/common_widgets.dart';
 
 class ExpensesScreen extends StatefulWidget {
   const ExpensesScreen({super.key});

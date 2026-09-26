@@ -3,12 +3,12 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:timecash/models/expense.dart';
-import 'package:timecash/models/budget.dart';
-import 'package:timecash/services/database_service.dart';
-import 'package:timecash/services/notification_service.dart';
-import 'package:timecash/services/settings_service.dart';
-import 'package:timecash/utils/helpers.dart';
+import 'package:flowra/models/expense.dart';
+import 'package:flowra/models/budget.dart';
+import 'package:flowra/services/database_service.dart';
+import 'package:flowra/services/notification_service.dart';
+import 'package:flowra/services/settings_service.dart';
+import 'package:flowra/utils/helpers.dart';
 
 enum ExpenseGroupBy { day, week, month }
 

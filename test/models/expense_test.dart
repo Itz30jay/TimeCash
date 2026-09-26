@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:timecash/models/expense.dart';
+import 'package:flowra/models/expense.dart';
 
 void main() {
   group('Expense Model Tests', () {

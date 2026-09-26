@@ -4,11 +4,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:timecash/providers/settings_provider.dart';
-import 'package:timecash/services/settings_service.dart';
-import 'package:timecash/utils/constants.dart';
-import 'package:timecash/utils/theme.dart';
-import 'package:timecash/widgets/common_widgets.dart';
+import 'package:flowra/providers/settings_provider.dart';
+import 'package:flowra/services/settings_service.dart';
+import 'package:flowra/utils/constants.dart';
+import 'package:flowra/utils/theme.dart';
+import 'package:flowra/widgets/common_widgets.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});

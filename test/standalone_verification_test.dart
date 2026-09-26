@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:timecash/models/task.dart';
-import 'package:timecash/models/expense.dart';
-import 'package:timecash/models/budget.dart';
-import 'package:timecash/utils/constants.dart';
+import 'package:flowra/models/task.dart';
+import 'package:flowra/models/expense.dart';
+import 'package:flowra/models/budget.dart';
+import 'package:flowra/utils/constants.dart';
 
 void main() {
   group('Standalone Core Logic Tests', () {

@@ -3,13 +3,13 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:timecash/models/task.dart';
-import 'package:timecash/providers/settings_provider.dart';
-import 'package:timecash/providers/task_provider.dart';
-import 'package:timecash/utils/constants.dart';
-import 'package:timecash/utils/helpers.dart';
-import 'package:timecash/utils/theme.dart';
-import 'package:timecash/widgets/common_widgets.dart';
+import 'package:flowra/models/task.dart';
+import 'package:flowra/providers/settings_provider.dart';
+import 'package:flowra/providers/task_provider.dart';
+import 'package:flowra/utils/constants.dart';
+import 'package:flowra/utils/helpers.dart';
+import 'package:flowra/utils/theme.dart';
+import 'package:flowra/widgets/common_widgets.dart';
 
 class AddEditTaskScreen extends StatefulWidget {
   final Task? task; // null = add mode, non-null = edit mode
