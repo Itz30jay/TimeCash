@@ -251,6 +251,119 @@ class _DonationScreenState extends State<DonationScreen> {
             ],
 
             const SizedBox(height: 32),
+
+            // ── Footer ────────────────────────────────────
+            Divider(
+              color: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
+              thickness: 1,
+            ),
+            const SizedBox(height: 20),
+
+            // Social links row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _SocialIconButton(
+                  icon: Icons.code_rounded,
+                  label: 'GitHub',
+                  url: AppConstants.githubProfileUrl,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+                const SizedBox(width: 24),
+                _SocialIconButton(
+                  icon: Icons.camera_alt_rounded,
+                  label: 'Instagram',
+                  url: AppConstants.instagramUrl,
+                  color: const Color(0xFFE1306C),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Copyright
+            Text(
+              '© ${DateTime.now().year} ${AppConstants.developerName}',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.grey[500] : Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Made with ❤️ in India',
+              style: TextStyle(
+                fontSize: 12,
+                color: isDark ? Colors.grey[600] : Colors.grey[400],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'TimeCash is open-source and free to use.',
+              style: TextStyle(
+                fontSize: 11,
+                color: isDark ? Colors.grey[700] : Colors.grey[400],
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A tappable social-media icon with label for the donation footer.
+class _SocialIconButton extends StatelessWidget {
+  const _SocialIconButton({
+    required this.icon,
+    required this.label,
+    required this.url,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final String url;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
+            ),
           ],
         ),
       ),

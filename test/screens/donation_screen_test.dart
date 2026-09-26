@@ -42,5 +42,36 @@ void main() {
       // Button now updates to 'Donate ₹300'
       expect(find.text('Donate ₹300'), findsOneWidget);
     });
+
+    testWidgets('renders footer with social links and copyright', (tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: DonationScreen(),
+        ),
+      );
+
+      // Scroll to the footer
+      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -800));
+      await tester.pumpAndSettle();
+
+      // Footer social links
+      expect(find.text('GitHub'), findsOneWidget);
+      expect(find.text('Instagram'), findsOneWidget);
+
+      // Copyright text (year is dynamic)
+      expect(find.textContaining('©'), findsOneWidget);
+      expect(find.textContaining('Jay'), findsOneWidget);
+
+      // Made with love text
+      expect(find.textContaining('Made with'), findsOneWidget);
+
+      // Open-source text
+      expect(find.textContaining('open-source'), findsOneWidget);
+    });
   });
 }

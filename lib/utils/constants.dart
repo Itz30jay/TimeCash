@@ -11,6 +11,10 @@ class AppConstants {
   static const String appDescription =
       'Offline study planner & expense tracker for students';
   static const String githubRepoUrl = 'https://github.com/Itz30jay/TimeCash';
+  static const String githubProfileUrl = 'https://github.com/Itz30jay';
+  static const String instagramUrl =
+      'https://www.instagram.com/jay_dev._._';
+  static const String developerName = 'Jay (Itz30jay)';
 
   // Donation configuration - change these to your own payment details
   static const String donationUpiId = 'developer@upi';
