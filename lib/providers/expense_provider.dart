@@ -220,9 +220,14 @@ class ExpenseProvider extends ChangeNotifier {
 
   /// Previous month comparison
   Future<double> getPreviousMonthTotal() async {
-    final now = DateTime.now();
-    final prevMonth = DateTime(now.year, now.month - 1, 1);
-    final month = DateTimeHelper.formatMonthForDb(prevMonth);
-    return _db.getTotalExpenseForMonth(month);
+    try {
+      final now = DateTime.now();
+      final prevMonth = DateTime(now.year, now.month - 1, 1);
+      final month = DateTimeHelper.formatMonthForDb(prevMonth);
+      return await _db.getTotalExpenseForMonth(month);
+    } catch (e) {
+      debugPrint('Error getting previous month total: $e');
+      return 0.0;
+    }
   }
 }

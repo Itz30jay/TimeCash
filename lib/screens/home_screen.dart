@@ -34,7 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
     // Refresh every 30 seconds to update task status and countdown
     _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       _loadData();

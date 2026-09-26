@@ -107,7 +107,12 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<List<Task>> getTasksForDate(DateTime date) async {
-    return _db.getTasksByDate(DateTimeHelper.formatDateForDb(date));
+    try {
+      return await _db.getTasksByDate(DateTimeHelper.formatDateForDb(date));
+    } catch (e) {
+      debugPrint('Error getting tasks for date: $e');
+      return [];
+    }
   }
 
   Future<Task?> addTask(Task task) async {
