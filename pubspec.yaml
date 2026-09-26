@@ -2,6 +2,9 @@ name: timecash
 description: "TimeCash - Offline study planner & expense tracker for students"
 publish_to: 'none'
 version: 1.0.0+1
+homepage: https://github.com/Itz30jay/TimeCash
+repository: https://github.com/Itz30jay/TimeCash
+issue_tracker: https://github.com/Itz30jay/TimeCash/issues
 
 environment:
   sdk: ^3.5.0

@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:timecash/providers/settings_provider.dart';
 import 'package:timecash/providers/task_provider.dart';
 import 'package:timecash/providers/expense_provider.dart';
@@ -184,6 +185,16 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const DonationScreen()),
+            ),
+          ),
+          _SettingsTile(
+            icon: Icons.code_rounded,
+            title: 'View Source Code',
+            subtitle: 'Open on GitHub',
+            trailing: const Icon(Icons.open_in_new_rounded, size: 16),
+            onTap: () => launchUrl(
+              Uri.parse(AppConstants.githubRepoUrl),
+              mode: LaunchMode.externalApplication,
             ),
           ),
           _SettingsTile(
@@ -445,6 +456,13 @@ class SettingsScreen extends StatelessWidget {
           ],
         ),
         actions: [
+          TextButton(
+            onPressed: () => launchUrl(
+              Uri.parse(AppConstants.githubRepoUrl),
+              mode: LaunchMode.externalApplication,
+            ),
+            child: const Text('GitHub'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: const Text('Close'),

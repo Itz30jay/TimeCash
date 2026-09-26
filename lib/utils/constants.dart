@@ -10,6 +10,7 @@ class AppConstants {
   static const String appVersion = '1.0.0';
   static const String appDescription =
       'Offline study planner & expense tracker for students';
+  static const String githubRepoUrl = 'https://github.com/Itz30jay/TimeCash';
 
   // Donation configuration - change these to your own payment details
   static const String donationUpiId = 'developer@upi';
